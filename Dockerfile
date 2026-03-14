@@ -14,8 +14,7 @@ RUN echo "Building with cache date: $CACHE_DATE" && \
     libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
     llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
     libffi-dev liblzma-dev libyaml-dev python3-pip \
-    openjdk-11-jdk openjdk-17-jdk openjdk-21-jdk \
-    awscli && \
+    openjdk-11-jdk openjdk-17-jdk openjdk-21-jdk && \
     rm -rf /var/lib/apt/lists/*
 
 # 2. Terraform & Ansible (Official Repos)
@@ -42,5 +41,11 @@ RUN wget https://go.dev/dl/go1.23.0.linux-amd64.tar.gz && \
     rm go1.23.0.linux-amd64.tar.gz
 
 ENV PATH="/usr/local/go/bin:${PATH}"
-
+ 
+# 6. AWS CLI v2 (Official Installer)
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+ 
 USER runner

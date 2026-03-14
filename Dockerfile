@@ -6,14 +6,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 # 1. Essential System Dependencies
 ARG CACHE_DATE=not_set
 RUN echo "Building with cache date: $CACHE_DATE" && \
-    apt-get update && apt-get upgrade -y && \
+    apt-get update && \
+    apt-get -y -o Dpkg::Options::="--force-confold" upgrade && \
     apt-get install -y --no-install-recommends \
     curl wget git jq unzip zip build-essential software-properties-common \
     apt-transport-https ca-certificates gnupg lsb-release \
     libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
     llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
     libffi-dev liblzma-dev libyaml-dev python3-pip \
-    openjdk-8-jdk openjdk-11-jdk openjdk-17-jdk openjdk-21-jdk \
+    openjdk-11-jdk openjdk-17-jdk openjdk-21-jdk \
     awscli && \
     rm -rf /var/lib/apt/lists/*
 

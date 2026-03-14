@@ -1,0 +1,43 @@
+name: Build and Rotate Runner Image
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' 
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          # FORCE UPDATE: Passing a fresh timestamp breaks the cache
+          # This ensures 'apt-get upgrade' runs fresh on every building
+          docker build \
+            --build-arg CACHE_DATE=$(date +%Y-%m-%d_%H-%M-%S) \
+            -t ghcr.io/${{ github.repository }}/custom-runner:latest .
+
+      - name: Slim Docker image
+        uses: kitabisa/docker-slim-action@v1
+        env:
+          DSLIM_HTTP_PROBE: "false"
+        with:
+          target: ghcr.io/${{ github.repository }}/custom-runner:latest
+          tag: slim
+
+      - name: Push Docker images
+        run: |
+          docker push ghcr.io/${{ github.repository }}/custom-runner:latest
+          docker push ghcr.io/${{ github.repository }}/custom-runner:slim

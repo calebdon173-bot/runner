@@ -27,8 +27,10 @@ jobs:
           docker build \
             --build-arg CACHE_DATE=$(date +%Y-%m-%d_%H-%M-%S) \
             -t ghcr.io/${{ github.repository }}/custom-runner:latest
+            -t ghcr.io/${{ github.repository }}/custom-runner:slim .
 
       - name: Push Docker images
         run: |
           # We tag both so your other workflows don't need a YAML change
           docker push ghcr.io/${{ github.repository }}/custom-runner:latest
+          docker push ghcr.io/${{ github.repository }}/custom-runner:slim

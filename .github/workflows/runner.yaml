@@ -1,5 +1,4 @@
 name: Build and Rotate Runner Image
-
 on:
   schedule:
     - cron: '0 0 * * 0' 
@@ -21,16 +20,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: |
-          # Passing a fresh timestamp breaks the cache for apt-get upgrade
-          docker build \
-            --build-arg CACHE_DATE=$(date +%Y-%m-%d_%H-%M-%S) \
-            -t ghcr.io/${{ github.repository }}/custom-runner:latest \
-            -t ghcr.io/${{ github.repository }}/custom-runner:slim .
-
-      - name: Push Docker images
-        run: |
-          # We tag both so your other workflows don't need a YAML change
-          docker push ghcr.io/${{ github.repository }}/custom-runner:latest
-          docker push ghcr.io/${{ github.repository }}/custom-runner:slim
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          build-args: |
+             CACHE_DATE=$(date +%Y-%m-%d_%H-%M-%S)
+          tags: |
+            ghcr.io/${{ github.repository }}/custom-runner:latest
+            ghcr.io/${{ github.repository }}/custom-runner:slim
+            ghcr.io/${{ github.repository }}/custom-runner:${{ github.sha }}

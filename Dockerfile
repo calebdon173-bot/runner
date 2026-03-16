@@ -15,7 +15,7 @@ RUN echo "Building with cache date: $CACHE_DATE" && \
     llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
     libffi-dev liblzma-dev libyaml-dev python3-pip \
     openjdk-11-jdk openjdk-17-jdk openjdk-21-jdk && \
-    apt-get install -y coreutils \
+    apt-get install -y coreutils && \
     rm -rf /var/lib/apt/lists/*
 
 # 2. Terraform & Ansible (Official Repos)

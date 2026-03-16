@@ -23,21 +23,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          # FORCE UPDATE: Passing a fresh timestamp breaks the cache
-          # This ensures 'apt-get upgrade' runs fresh on every building
+          # Passing a fresh timestamp breaks the cache for apt-get upgrade
           docker build \
             --build-arg CACHE_DATE=$(date +%Y-%m-%d_%H-%M-%S) \
-            -t ghcr.io/${{ github.repository }}/custom-runner:latest .
-
-      - name: Slim Docker image
-        uses: kitabisa/docker-slim-action@v1
-        env:
-          DSLIM_HTTP_PROBE: "false"
-        with:
-          target: ghcr.io/${{ github.repository }}/custom-runner:latest
-          tag: slim
+            -t ghcr.io/${{ github.repository }}/custom-runner:latest
 
       - name: Push Docker images
         run: |
+          # We tag both so your other workflows don't need a YAML change
           docker push ghcr.io/${{ github.repository }}/custom-runner:latest
-          docker push ghcr.io/${{ github.repository }}/custom-runner:slim

@@ -26,7 +26,7 @@ jobs:
           # Passing a fresh timestamp breaks the cache for apt-get upgrade
           docker build \
             --build-arg CACHE_DATE=$(date +%Y-%m-%d_%H-%M-%S) \
-            -t ghcr.io/${{ github.repository }}/custom-runner:latest
+            -t ghcr.io/${{ github.repository }}/custom-runner:latest \
             -t ghcr.io/${{ github.repository }}/custom-runner:slim .
 
       - name: Push Docker images
